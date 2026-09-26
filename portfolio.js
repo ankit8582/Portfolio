@@ -99,39 +99,54 @@ document.querySelectorAll('.nav-link').forEach(link => {
   });
 });
 
-// ===== TYPING EFFECT =====
+// ===== BULLETPROOF TYPING EFFECT =====
 const roles = [
-  'MERN Stack Developer 💻',
-  'Aspiring DevOps Engineer ☁️',
-  'MCA Student @ NIET 🎓',
-  'React & Node.js Specialist 🚀',
-  'Java & AWS Cloud Explorer ⚡'
+  'MERN Stack Developer',
+  'Aspiring DevOps Engineer',
+  'MCA Student @ NIET',
+  'React & Node.js Specialist',
+  'Java & AWS Cloud Explorer'
 ];
-let roleIndex = 0, charIndex = 0, isDeleting = false;
-const typedEl = document.getElementById('typed-role');
+let roleIndex = 0;
+let charIndex = 0;
+let isDeleting = false;
 
 function typeEffect() {
+  const typedEl = document.getElementById('typed-role');
   if (!typedEl) return;
-  const current = roles[roleIndex];
+
+  const currentRole = roles[roleIndex];
+
   if (!isDeleting) {
-    typedEl.textContent = current.substring(0, charIndex + 1);
+    typedEl.textContent = currentRole.substring(0, charIndex + 1);
     charIndex++;
-    if (charIndex === current.length) {
+    if (charIndex >= currentRole.length) {
       isDeleting = true;
-      setTimeout(typeEffect, 1800);
+      setTimeout(typeEffect, 1600);
       return;
     }
   } else {
-    typedEl.textContent = current.substring(0, charIndex - 1);
+    typedEl.textContent = currentRole.substring(0, charIndex - 1);
     charIndex--;
-    if (charIndex === 0) {
+    if (charIndex <= 0) {
       isDeleting = false;
       roleIndex = (roleIndex + 1) % roles.length;
+      charIndex = 0;
+      setTimeout(typeEffect, 300);
+      return;
     }
   }
-  setTimeout(typeEffect, isDeleting ? 50 : 100);
+
+  const speed = isDeleting ? 45 : 85;
+  setTimeout(typeEffect, speed);
 }
-setTimeout(typeEffect, 800);
+
+// Start typing as soon as DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => setTimeout(typeEffect, 400));
+} else {
+  setTimeout(typeEffect, 400);
+}
 
 // ===== PARTICLES CANVAS =====
 const particleContainer = document.getElementById('particles');
@@ -306,10 +321,8 @@ if (form) {
     } catch (err) {
       console.warn('FormSubmit AJAX fallback:', err);
       // Fallback: Opens direct mailto link to as3000610@gmail.com
-      const mailtoUrl = `mailto:as3000610@gmail.com?subject=${encodeURIComponent('[Portfolio] ' + subjectVal)}&body=${encodeURIComponent('From: ' + nameVal + ' (' + emailVal + ')
-
-Message:
-' + messageVal)}`;
+      const bodyText = "From: " + nameVal + " (" + emailVal + ")\n\nMessage:\n" + messageVal;
+      const mailtoUrl = "mailto:as3000610@gmail.com?subject=" + encodeURIComponent("[Portfolio] " + subjectVal) + "&body=" + encodeURIComponent(bodyText);
       window.open(mailtoUrl, '_blank');
       successMsg.innerHTML = '<i class="fas fa-info-circle"></i> Opening email client to send message to as3000610@gmail.com...';
       successMsg.style.display = 'flex';
